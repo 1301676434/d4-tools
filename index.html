@@ -8,6 +8,8 @@
 	<link rel="icon" type="image/png" href="favicon.png">
 	
 	<link rel="stylesheet" href="common.css">
+	<script defer src="i18n.js?v=0.1.0"></script>
+	<script defer src="i18n-zh.js?v=0.1.0"></script>
 	<script defer src="common.js"></script>
 
 	<title>D4 Calculators</title>
@@ -36,39 +38,46 @@
 	<div class="main-header">
 		<div class="header-section" style="flex: 1 0 auto;">
 			<svg id="d4-icon" width="36" height="36" fill="none" viewBox="0 1 48 48"><use xlink:href="#svg-d4"></use></svg>
-			<h3 id="main-headline" class="text-shadow-1" style="display: none;">Tools</h3>
+			<h3 id="main-headline" class="text-shadow-1" style="display: none;" data-i18n="D4 Calculators">D4 Calculators</h3>
 		</div>
 	</div>
 	<div class="main-view">
 		<div class="options-menu hidden">
 			<section>
 				<div class="group">
-					<label>Color style dark:</label><input name="option-dark-mode" type="checkbox">
+					<label data-i18n="Color style dark:">Color style dark:</label><input name="option-dark-mode" type="checkbox">
 				</div>
 				<div class="group">
-					<label>Show detailed damage:</label><input name="option-detailed-info" type="checkbox">
+					<label data-i18n="Show detailed result:">Show detailed result:</label><input name="option-detailed-info" type="checkbox">
 				</div>
 				<div class="group">
-					<label>Always single column:</label><input name="option-single-column" type="checkbox">
+					<label data-i18n="Always single column:">Always single column:</label><input name="option-single-column" type="checkbox">
+				</div>
+				<div class="group">
+					<label data-i18n="Language:">Language:</label>
+					<select onchange="setLanguage(this.value);" data-i18n-title="Language:">
+						<option value="en">English</option>
+						<option value="zh">中文</option>
+					</select>
 				</div>
 			</section>
 		</div>
 		<div class="content-page empty">
 			<div class="no-content-menu section">
 				<div class="nc-menu-section">
-					<h3 style="margin: 16px 8px;">Choose your calculator:</h3>
+					<h3 style="margin: 16px 8px;" data-i18n="Choose your calculator:">Choose your calculator:</h3>
 				</div>
 				<div class="nc-menu-section">
-					<a class="button-style big" href="damage.html">DAMAGE <svg viewBox="0 0 128 128" style="width: 14px; fill: currentColor; margin: 0 0 0 8px;"><use xlink:href="#svg-swords"></use></svg></a>
+					<a class="button-style big" href="damage.html"><span data-i18n="DAMAGE">DAMAGE</span> <svg viewBox="0 0 128 128" style="width: 14px; fill: currentColor; margin: 0 0 0 8px;"><use xlink:href="#svg-swords"></use></svg></a>
 				</div>
 				<div class="nc-menu-section">
-					<a class="button-style big" href="defense.html">DEFENSE <svg viewBox="0 0 128 128" style="width: 14px; fill: currentColor; margin: 0 0 0 8px;"><use xlink:href="#svg-shield"></use></svg></a>
+					<a class="button-style big" href="defense.html"><span data-i18n="DEFENSE">DEFENSE</span> <svg viewBox="0 0 128 128" style="width: 14px; fill: currentColor; margin: 0 0 0 8px;"><use xlink:href="#svg-shield"></use></svg></a>
 				</div>
 				<div class="nc-menu-section">
-					<h3 style="margin: 16px 8px;">Get help or contribute:</h3>
+					<h3 style="margin: 16px 8px;" data-i18n="Get help or contribute:">Get help or contribute:</h3>
 				</div>
 				<div class="nc-menu-section">
-					<a class="button-style big black" href="https://github.com/bytemind-de/d4-tools" target=blank_>HELP / CODE</a>
+					<a class="button-style big black" href="https://github.com/bytemind-de/d4-tools" target=blank_ data-i18n="HELP / CODE">HELP / CODE</a>
 				</div>
 				<div class="nc-menu-section"></div>
 			</div>

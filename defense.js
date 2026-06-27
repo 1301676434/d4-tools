@@ -9,6 +9,8 @@ var penaltyModColorLight = "color-penalty-mod-light";
 var elementalResisColor = "color-elemental-resis";
 var elementalResisColorAlt = "color-elemental-resis-alt";
 
+var _t = function(k){ return (window.d4?.i18n?.t || function(x){return x})(k); };
+
 var classSpecificValues = {
 	"Barb": {},
 	"Druid": {},
@@ -72,9 +74,9 @@ function buildCalculator(containerEle, options){
 	
 	function chooseTitle(){
 		showFormPopUp([
-			{label: "Enter a name for this configuration:", input: true, name: "name", required: true,
+			{label: _t("Enter a name for this configuration:"), input: true, name: "name", required: true,
 				value: currentConfigName, title: "Please use [a-zA-Z0-9\\s_\\-]", pattern: "[a-zA-Z0-9\\s_\\-]+"},
-			{submit: true, name: "Set"}
+			{submit: true, name: _t("Set")}
 		], function(formData){
 			var newTitle = formData.get("name").trim();
 			if (newTitle){
@@ -94,7 +96,7 @@ function buildCalculator(containerEle, options){
 		//var modName = newName || prompt("Enter a name for this value:");
 		//if (!modName) return;
 		//addDynamicMod(armorItemsContainer, modName, "border-col-armor", startValue, isDisabled, 1.0, undefined, selectedTypes, flatArmorLabelsList, onModUpdate);
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this value:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this value:"),
 			flatArmorLabelsList, undefined, selectedTypes, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -108,7 +110,7 @@ function buildCalculator(containerEle, options){
 		//var modName = newName || prompt("Enter a name for this '%' modifier:");
 		//if (!modName) return;
 		//addDynamicMod(armorPctContainer, modName, "border-col-armor", startValue, isDisabled, 0.1, undefined, selectedTypes, pctArmorLabelsList, onModUpdate);
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this '%' modifier:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this '%' modifier:"),
 			pctArmorLabelsList, undefined, selectedTypes, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -122,7 +124,7 @@ function buildCalculator(containerEle, options){
 		//var modName = newName || prompt("Enter a name for this value:");
 		//if (!modName) return;
 		//addDynamicMod(maxlifeItemsContainer, modName, "border-col-life", startValue, isDisabled, 1.0, undefined, selectedTypes, flatLifeLabelsList, onModUpdate);
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this value:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this value:"),
 			flatLifeLabelsList, undefined, selectedTypes, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -136,7 +138,7 @@ function buildCalculator(containerEle, options){
 		//var modName = newName || prompt("Enter a name for this '%' modifier:");
 		//if (!modName) return;
 		//addDynamicMod(maxlifePctContainer, modName, "border-col-life", startValue, isDisabled, 0.1, undefined, selectedTypes, pctLifeLabelsList, onModUpdate);
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this '%' modifier:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this '%' modifier:"),
 			pctLifeLabelsList, undefined, selectedTypes, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -150,7 +152,7 @@ function buildCalculator(containerEle, options){
 		//var modName = newName || prompt("Enter a name for this damage reduction modifier:");
 		//if (!modName) return;
 		//addDynamicMod(drValuesContainer, modName, "reduction-mod-val", startValue, isDisabled, 0.1, undefined, selectedTypes, damageReductionLabelsList, onModUpdate);
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this damage reduction modifier:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this damage reduction modifier:"),
 			damageReductionLabelsList, undefined, selectedTypes, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -164,7 +166,7 @@ function buildCalculator(containerEle, options){
 		//var modName = newName || prompt("Enter a name for this penalty modifier:");
 		//if (!modName) return;
 		//addDynamicMod(penaltyValuesContainer, modName, "penalty-mod-val", startValue, isDisabled, 0.1, undefined, selectedTypes, pctMoreDamageTakenLabelsList, onModUpdate);
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this penalty modifier:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this penalty modifier:"),
 			pctMoreDamageTakenLabelsList, undefined, selectedTypes, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -323,7 +325,7 @@ function buildCalculator(containerEle, options){
 			}
 		}, 0);
 		baseArmor += calculateArmorFromStrength(data.strength);
-		addResult("Base armor", baseArmor, undefined, armorItemColor, "Base armor resulting from gear, gems, strength and paragon etc.");
+		addResult(_t("Base armor"), baseArmor, undefined, armorItemColor, "Base armor resulting from gear, gems, strength and paragon etc.");
 		var totalArmor = data.armorModifiers.reduce(function(totalAr, item){
 			if (item.disabled) return totalAr;
 			else {
@@ -333,25 +335,25 @@ function buildCalculator(containerEle, options){
 				return (totalAr + addArmor);
 			}
 		}, baseArmor);
-		addResult("Total armor", totalArmor, undefined, armorItemColor, "Total armor including all modifiers.");
+		addResult(_t("Total armor"), totalArmor, undefined, armorItemColor, "Total armor including all modifiers.");
 		var physicalDrFromArmor = calculateArmorDr(totalArmor, data.enemyLevel);
-		addResult("Physical DR from armor (approx.)", Math.round(physicalDrFromArmor * 100).toLocaleString() + "%",
+		addResult(_t("Physical DR from armor (approx.)"), Math.round(physicalDrFromArmor * 100).toLocaleString() + "%",
 				undefined, armorItemColor, "Physical damage reduction based on total armor and enemy level.");
 		var armorDiffToCap = calculateMissingOrExcessArmor(totalArmor, data.enemyLevel);
-		addResult("Armor required for 85% cap", "" + Math.round(armorDiffToCap).toLocaleString(),
+		addResult(_t("Armor required for 85% cap"), "" + Math.round(armorDiffToCap).toLocaleString(),
 				undefined, armorItemColorAlt, "Approx. add. armor required to reach 85% DR cap.", true);
 		addCustom("<hr>", "flat");
 		
 		//life
 		var baseLife = data.baseLife;
-		addResult("Base life", baseLife, undefined, lifeItemColorAlt, "Life determined by your character level.", true);
+		addResult(_t("Base life"), baseLife, undefined, lifeItemColorAlt, "Life determined by your character level.", true);
 		var maximumLifeBase = data.maxlifeItems.reduce(function(totalHp, item){
 			if (item.disabled) return totalHp;
 			else {
 				return (totalHp + item.life);
 			}
 		}, baseLife);
-		addResult("Base maximum life", maximumLifeBase, undefined, lifeItemColor, "Life after additional flat life boni.");
+		addResult(_t("Base maximum life"), maximumLifeBase, undefined, lifeItemColor, "Life after additional flat life boni.");
 		var maximumLifeMulti = data.maxlifeModifiers.reduce(function(totalHp, item){
 			if (item.disabled) return totalHp;
 			else {
@@ -361,7 +363,7 @@ function buildCalculator(containerEle, options){
 				return (totalHp + addLife);
 			}
 		}, maximumLifeBase);
-		addResult("Total life + barrier", maximumLifeMulti, undefined, lifeItemColor, "Total max. life after multiplicative modifiers including barrier.");
+		addResult(_t("Total life + barrier"), maximumLifeMulti, undefined, lifeItemColor, "Total max. life after multiplicative modifiers including barrier.");
 		addCustom("<hr>", "flat");
 		var maximumLife = maximumLifeMulti;
 		
@@ -376,7 +378,7 @@ function buildCalculator(containerEle, options){
 			dmgLeftPct *= 0.85;		//NOTE: updated for S4 with 15% instead of 10%
 		}
 		var totalDr = (1.0 - dmgLeftPct);
-		addResult("Total damage reduction", Math.round(totalDr * 100).toLocaleString() + "%", undefined, reductionModColor,
+		addResult(_t("Total damage reduction"), Math.round(totalDr * 100).toLocaleString() + "%", undefined, reductionModColor,
 				"Total damage reduction applying all percentages.");
 		addCustom("<hr>", "flat");
 		
@@ -388,7 +390,7 @@ function buildCalculator(containerEle, options){
 			}
 		}, 1.0);
 		if (dmgPenaltyPct > 1.0){
-			addResult("Total additional damage taken", Math.round(dmgPenaltyPct * 100 - 100).toLocaleString() + "%", undefined, penaltyModColor,
+			addResult(_t("Total additional damage taken"), Math.round(dmgPenaltyPct * 100 - 100).toLocaleString() + "%", undefined, penaltyModColor,
 					"Total damage penalty applying all percentages.");
 			addCustom("<hr>", "flat");
 		}
@@ -397,11 +399,11 @@ function buildCalculator(containerEle, options){
 		var effectiveLifeBase = maximumLife/dmgLeftPct * (1/dmgPenaltyPct);
 		var effectiveLifeVsPhysical = effectiveLifeBase/(1.0 - physicalDrFromArmor);
 		var effectiveLifeVsElemental = effectiveLifeBase/(1.0 - data.elementalResisSingle/100);
-		addResult("Base effective life", effectiveLifeBase, undefined, reductionModColorLight,
+		addResult(_t("Base effective life"), effectiveLifeBase, undefined, reductionModColorLight,
 			"Effective life with all defense properties applied.", true);
-		addResult("Effective life vs elemental", effectiveLifeVsElemental, undefined, elementalResisColor,
+		addResult(_t("Effective life vs elemental"), effectiveLifeVsElemental, undefined, elementalResisColor,
 			"Effective life vs selected elemental attacks with all defense properties applied.");
-		addResult("Effective life vs physical", effectiveLifeVsPhysical, undefined, undefined,
+		addResult(_t("Effective life vs physical"), effectiveLifeVsPhysical, undefined, undefined,
 			"Effective life against physical attacks with all defense properties applied.");
 	}
 	
@@ -511,15 +513,15 @@ function buildCalculator(containerEle, options){
 	function saveData(){
 		var data = getData();
 		showFormPopUp([
-			{label: "Enter a name for this configuration:", input: true, name: "name",
+			{label: _t("Enter a name for this configuration:"), input: true, name: "name",
 				value: currentConfigName, title: "Allowed characters: a-Z,0-9,_,- and space",
 				pattern: "[a-zA-Z0-9\\s_\\-]+", required: true},
-			{submit: true, name: "Save"}
+			{submit: true, name: _t("Save")}
 		], function(formData){
 			var name = formData.get("name").trim();
 			setTitle(name);
 			writeConfigToLocalStorage(name, data);
-			showPopUp("Configuration has been saved to browser storage.", [], {easyClose: true});
+			showPopUp(_t("Configuration has been saved to browser storage."), [], {easyClose: true});
 		});
 	}
 	function loadData(){
@@ -632,6 +634,8 @@ function addNewContentBox(){
 	c.className = "content-box calculator-instance";
 	c.innerHTML = calculatorTemplate;
 	contentPage.appendChild(c);
+	//apply i18n to new calculator
+	if (window.d4?.i18n) window.d4.i18n.apply(c);
 	
 	//automatically add info pop-ups
 	c.querySelectorAll(".has-info").forEach(function(ele){

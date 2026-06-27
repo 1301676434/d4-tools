@@ -24,15 +24,15 @@ const TYPE_OVERPOWER = "overpower";
 
 var selectableDamageTypes = [
 	//NOTE: check 'getIncludedDamageTypesAndKey' if you change the available types
-	{name: "Vulnerable Enemy", value: TYPE_VULNERABLE, className: vulnerableColor, color: ""},
-	{name: "Vulnerable Damage Multiplier", value: TYPE_VULNERABLE_B2, className: vulnerableColor, color: ""},
-	{name: "Critical Strike", value: TYPE_CRIT, className: critColor, color: ""},
-	{name: "Critical Strike Damage Multiplier", value: TYPE_CRIT_B2, className: critColor, color: ""},
-	{name: "Damage Over Time", value: TYPE_KEY_CORE_DOT, className: dotColor, color: ""},
-	{name: "Damage Over Time Multiplier", value: TYPE_KEY_CORE_DOT_B2, className: dotColor, color: ""},
-	{name: "Requires Overpower Stacks", value: TYPE_OVERPOWER, className: overpowerColor, color: ""},
+	{name: _t("Vulnerable Enemy"), value: TYPE_VULNERABLE, className: vulnerableColor, color: ""},
+	{name: _t("Vulnerable Damage Multiplier"), value: TYPE_VULNERABLE_B2, className: vulnerableColor, color: ""},
+	{name: _t("Critical Strike"), value: TYPE_CRIT, className: critColor, color: ""},
+	{name: _t("Critical Strike Damage Multiplier"), value: TYPE_CRIT_B2, className: critColor, color: ""},
+	{name: _t("Damage Over Time"), value: TYPE_KEY_CORE_DOT, className: dotColor, color: ""},
+	{name: _t("Damage Over Time Multiplier"), value: TYPE_KEY_CORE_DOT_B2, className: dotColor, color: ""},
+	{name: _t("Requires Overpower Stacks"), value: TYPE_OVERPOWER, className: overpowerColor, color: ""},
 	//{name: "Unique/Set/Aspect/Paragon Multiplier", value: TYPE_KEY_CORE, className: noneColor, color: ""},
-	{name: "All/Phys/[Element] Damage Multi.", value: TYPE_KEY_CORE_B2, className: "", color: ""}
+	{name: _t("All/Phys/[Element] Damage Multi."), value: TYPE_KEY_CORE_B2, className: "", color: ""}
 	//{name: "Test", value: "test", className: "", color: "#0f0"}
 ];
 var selectableDamageTypesFilter = {
@@ -184,9 +184,9 @@ function buildCalculator(containerEle, options){
 	
 	function chooseTitle(){
 		showFormPopUp([
-			{label: "Enter a name for this configuration:", input: true, name: "name", required: true,
+			{label: _t("Enter a name for this configuration:"), input: true, name: "name", required: true,
 				value: currentConfigName, title: "Please use [a-zA-Z0-9\\s_\\-]", pattern: "[a-zA-Z0-9\\s_\\-]+"},
-			{submit: true, name: "Set"}
+			{submit: true, name: _t("Set")}
 		], function(formData){
 			var newTitle = formData.get("name").trim();
 			if (newTitle){
@@ -206,7 +206,7 @@ function buildCalculator(containerEle, options){
 		const addFilter = selectableDamageTypesFilter.additive;
 		const addDamageTypes = selectableDamageTypes.filter((o) => !addFilter || addFilter.includes(o.value));
 		//var modName = newName || prompt("Enter a name for this '+' modifier:");
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this '+' modifier:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this '+' modifier:"),
 			additiveDamageLabelsList, addDamageTypes, selectedTypes, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -221,7 +221,7 @@ function buildCalculator(containerEle, options){
 		const mFilter = selectableDamageTypesFilter.multiplicativeB1;
 		const mDamageTypes = selectableDamageTypes.filter((o) => !mFilter || mFilter.includes(o.value));
 		//var modName = newName || prompt("Enter a name for this '×' modifier:");
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this '×' modifier:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this '×' modifier:"),
 			multiplicativeDamageLabelsList, mDamageTypes, selectedTypes, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -236,7 +236,7 @@ function buildCalculator(containerEle, options){
 		const mFilter = selectableDamageTypesFilter.multiplicativeB2;
 		const mDamageTypes = selectableDamageTypes.filter((o) => !mFilter || mFilter.includes(o.value));
 		//var modName = newName || prompt("Enter a name for this '×' modifier:");
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this '×' modifier:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this '×' modifier:"),
 			multiplicativeDamageLabelsListC2, mDamageTypes, selectedTypes, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -248,7 +248,7 @@ function buildCalculator(containerEle, options){
 	}
 	function addReductionMod(newName, startValue, isDisabled, selectedTypes){
 		//var modName = newName || prompt("Enter a name for this damage reduction modifier:");
-		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", "Enter a name for this damage reduction modifier:",
+		Promise.resolve(newName? {name: newName} : addDynamicModPromptPromise("", _t("Enter a name for this damage reduction modifier:"),
 			undefined, undefined, undefined, getCharClass()))
 		.then(function(data){
 			var modName = data.name;
@@ -322,6 +322,8 @@ function buildCalculator(containerEle, options){
 		return factors;
 	}
 	
+	var _t = function(k){ return (window.d4?.i18n?.t || function(x){return x})(k); };
+
 	function addResult(info, val, modFactor, colorClass, tooltip, isDetail, enableTooltipPopup){
 		if (!colorClass) colorClass = "";
 		var grp = document.createElement("div");
@@ -389,7 +391,7 @@ function buildCalculator(containerEle, options){
 		var addedWeaponDamage = +(weaponDamageAddEle.value || 0);
 		if (addedWeaponDamage){
 			let bonusWeaponDamageFactor = 1.0 + (addedWeaponDamage/baseDamage);
-			addResult("Bonus weapon damage", addedWeaponDamage, bonusWeaponDamageFactor, undefined,
+			addResult(_t("Bonus weapon damage"), addedWeaponDamage, bonusWeaponDamageFactor, undefined,
 				"Bonus weapon damage of active weapon(s).");
 			baseDamage += addedWeaponDamage;
 		}
@@ -399,7 +401,7 @@ function buildCalculator(containerEle, options){
 		
 		var skillDamageFactor = (+skillDamageEle.value || 0.0) / 100;
 		totalDamage = baseDamage * skillDamageFactor;
-		addResult("Skill base damage", totalDamage, skillDamageFactor, undefined,
+		addResult(_t("Skill base damage"), totalDamage, skillDamageFactor, undefined,
 			"Average base damage done with the given weapon and skill.");
 		addCustom("<hr>", "flat");
 		
@@ -407,7 +409,7 @@ function buildCalculator(containerEle, options){
 		var mainStatFactor = 1.0 + (+mainStatDmgEle.value || 0.0) / 100;
 		totalDamage = totalDamage * mainStatFactor;		//baseDamage * skillDamageFactor * ...
 		var coreDamage = totalDamage;
-		addResult("Main stat.", totalDamage, mainStatFactor, undefined,
+		addResult(_t("Main stat."), totalDamage, mainStatFactor, undefined,
 			"Damage including main stat factor.");
 		addCustom("<hr>", "flat");
 		
@@ -435,10 +437,10 @@ function buildCalculator(containerEle, options){
 			addCustom("<hr>", "flat opacity-20", true);
 		}
 		if (hasModifier){
-			addResult("Core damage after add. mod.", coreDamageWithAdd, addModFactorCore, addModColor,
+			addResult(_t("Core damage after add. mod."), coreDamageWithAdd, addModFactorCore, addModColor,
 				"Core damage (no vulnerable/crit./overpower) after all additive modifiers have been applied.", false, true);
 		}
-		addResult("Max. damage after add. mod.", totalDamage, addModFactor, addModColor,
+		addResult(_t("Max. damage after add. mod."), totalDamage, addModFactor, addModColor,
 			"Max. damage for most powerful hit, after all additive modifiers have been applied.", false, true);
 		
 		addCustom("<hr>", "flat");
@@ -460,10 +462,10 @@ function buildCalculator(containerEle, options){
 		
 		//show results after multipl. damage calc.
 		if (hasModifier){
-			addResult("Core damage after multipliers", coreDamageWithAddAndMulti, multiModFactorCore, multiModColor,
+			addResult(_t("Core damage after multipliers"), coreDamageWithAddAndMulti, multiModFactorCore, multiModColor,
 				"Core damage (no vulnerable/crit./overpower) after all additive and multiplicative modifiers have been applied.", false, true);
 		}
-		addResult("Max. damage after multipliers", totalDamage, multiModFactor, multiModColor,
+		addResult(_t("Max. damage after multipliers"), totalDamage, multiModFactor, multiModColor,
 			"Max. damage for most powerful hit, after all additive and multiplicative modifiers have been applied (except the separate base multipliers for vuln./crit./overp.).", false, true);
 		
 		addCustom("<hr>", "flat");
@@ -485,7 +487,7 @@ function buildCalculator(containerEle, options){
 			//let vulnerableBaseDamage = coreDamage * addModFactorVulnerable * multiModFactorVulnerable * vulnerableDamageFactor;
 			//storedDamage[TYPE_VULNERABLE] = vulnerableBaseDamage;	//NOTE: we might already have this, but we set it again for simplicity
 			let effectiveVulnerableDamageFactor = vulnerableBaseDamage/coreDamageWithAddAndMulti;
-			addResult("Damage to vulnerable enemies", vulnerableBaseDamage, effectiveVulnerableDamageFactor, vulnerableColor,
+			addResult(_t("Damage to vulnerable enemies"), vulnerableBaseDamage, effectiveVulnerableDamageFactor, vulnerableColor,
 				"Damage to vulnerable enemies compared to a regular strike (no crit, no overpower) including all vulnerable modifiers. " 
 				+ "Base factor: " + Number(vulnerableDamageFactor).toFixed(2) 
 				+ ", effective factor: " + Number(effectiveVulnerableDamageFactor).toFixed(2) + ".", true, true);
@@ -499,7 +501,7 @@ function buildCalculator(containerEle, options){
 			let critBaseDamage = calculateFullDamageForGivenTypes(includeDamage, critDamageFactor, coreDamage,
 				storedDamage, additiveDamageFactorsByTypes, multiplicativeDamageFactorsByTypes);
 			let effectiveCritDamageFactor = critBaseDamage/coreDamageWithAddAndMulti;
-			addResult("Damage with critical strike", critBaseDamage, effectiveCritDamageFactor, critColor,
+			addResult(_t("Damage with critical strike"), critBaseDamage, effectiveCritDamageFactor, critColor,
 				"Damage done with critical strikes compared to regular damage (not vulnerable, no overpower) including all crit. modifiers. "
 				+ "Base factor: " + Number(critDamageFactor).toFixed(2) 
 				+ ", effective factor: " + Number(effectiveCritDamageFactor).toFixed(2) + ".", true, true);
@@ -522,17 +524,17 @@ function buildCalculator(containerEle, options){
 				storedDamage, additiveDamageFactorsByTypes, multiplicativeDamageFactorsByTypes);
 			let effectiveOverpowerDamageFactor = overpowerBaseDamage/coreDamageWithAddAndMulti;
 			//let overpowerChanceFactor = 1.0/(+overpowerOnNthAttackEle.value || 10000);		//NOTE: we consider every n-th attack as 1/n chance to do add. damage
-			addResult("Damage with overpower", overpowerBaseDamage, effectiveOverpowerDamageFactor, overpowerColor,
+			addResult(_t("Damage with overpower"), overpowerBaseDamage, effectiveOverpowerDamageFactor, overpowerColor,
 				"Damage done with overpower hits without modifiers like crit. or vulnerable, but including previous modifiers for type overpower. "
 				//+ "Base factor: " + Number(overpowerDamageFactor).toFixed(2) + ", " +
 				+ "Effective factor: " + Number(effectiveOverpowerDamageFactor).toFixed(2) + ".", true, true);
 			addCustom("<hr>", "flat", true);
 		}
 		if (!hasModifier){
-			addResult("Total max. damage per hit", totalDamage, undefined, undefined,
+			addResult(_t("Total max. damage per hit"), totalDamage, undefined, undefined,
 				"Total max. damage possible per hit with all the given modifiers combined (now including the base multipliers for vuln./crit./overp.), but before any damage reduction penalties.", false, true);
 		}else{
-			addResult("Total max. damage per hit", totalDamage, undefined, undefined,
+			addResult(_t("Total max. damage per hit"), totalDamage, undefined, undefined,
 				"Total max. damage per hit with all the given modifiers combined (now including the base multipliers for vuln./crit./overp.), but before any damage reduction penalties.", false, true);
 		}
 		addCustom("<hr>", "flat");
@@ -568,7 +570,7 @@ function buildCalculator(containerEle, options){
 		}else if (doCalcVulnerable.checked){
 			perHitColor = vulnerableColor;
 		}
-		addResult("Expected damage per hit", totalDamage, undefined, perHitColor,
+		addResult(_t("Expected damage per hit"), totalDamage, undefined, perHitColor,
 			"Final result for single (best) hit damage to monsters based on your average weapon damage.\n" 
 			+ "Note: Your in-game numbers can be around 25% lower/higher, depending on your min/max damage roll for weapon and skill at cast.", false, true);
 		
@@ -627,7 +629,7 @@ function buildCalculator(containerEle, options){
 			}
 		}
 		timeAvgDamageBase *= attackSpeed;
-		addResult("Average DPS", timeAvgDamageBase, undefined, undefined,
+		addResult(_t("Average DPS"), timeAvgDamageBase, undefined, undefined,
 			"Average damage per second, if you cast the skill as fast as possible over a few seconds without resource issues. " 
 			+ "Includes critical strike chance and every n-th overpower hit, if check-boxes are selected.", false, true);
 		
@@ -636,14 +638,14 @@ function buildCalculator(containerEle, options){
 			var N = steps || 100000;
 			console.log("Starting simulation ...");		//DEBUG
 			var loadPop;
-			if (N > 1000000) loadPop = showPopUp("Simulating DPS (" + N + " attacks) ...");
+			if (N > 1000000) loadPop = showPopUp(_t("Simulating DPS (") + N + _t(" attacks) ..."));
 			setTimeout(function(){
 				damageSimulation(N, coreDamage, storedDamage, additiveDamageFactorsByTypes, multiplicativeDamageFactorsByTypes,
 						reductionModFactor, function(averageDps, simTime, dataPoints){
 					console.log("All stored damage:", storedDamage);		//DEBUG
 					console.log("Average DPS:", averageDps);				//DEBUG
 					console.log("Simulation time (ms):", simTime);			//DEBUG
-					addResult("Average DPS (sim.: " + N + ")", averageDps, undefined, undefined,
+					addResult(_t("Average DPS (sim.: ") + N + _t(")"), averageDps, undefined, undefined,
 						"Average damage per second, if you cast the skill as fast as possible over a few seconds without resource issues. " 
 						+ "Includes critical strike chance and every n-th overpower hit, if check-boxes are selected.", false, true);
 					if (loadPop){
@@ -713,7 +715,7 @@ function buildCalculator(containerEle, options){
 			let thisDamage = addModBaseDamage * thisFactor;
 			additiveDamageFactor += thisFactor;
 			if (showResultDetails){
-				addResult("+ Damage to vulnerable", thisDamage, undefined, vulnerableColor,
+				addResult(_t("+ Damage to vulnerable"), thisDamage, undefined, vulnerableColor,
 					"Contribution of additive vulnerable damage: " + vulnDamPct + "%.", true);
 			}
 		}
@@ -723,7 +725,7 @@ function buildCalculator(containerEle, options){
 			let thisDamage = addModBaseDamage * thisFactor;
 			additiveDamageFactor += thisFactor;
 			if (showResultDetails){
-				addResult("+ Critical hit damage", thisDamage, undefined, critColor,
+				addResult(_t("+ Critical hit damage"), thisDamage, undefined, critColor,
 					"Contribution of additive critical hit damage: " + critDamPct + "%.", true);
 			}
 		}
@@ -760,7 +762,7 @@ function buildCalculator(containerEle, options){
 			additiveDamageFactor += thisFactorAdd;
 			if (showResultDetails){
 				let overpowerAddBaseDamage = addModBaseDamage * thisFactorAdd;
-				addResult("+ Overpower dmg. (active stacks)", overpowerAddBaseDamage, undefined, overpowerColor,
+				addResult(_t("+ Overpower dmg. (active stacks)"), overpowerAddBaseDamage, undefined, overpowerColor,
 					"Contribution of additive overpower damage: " + totalOverpowerDamageAdditive + "%.", true, true);
 			}
 		}
@@ -1026,15 +1028,15 @@ function buildCalculator(containerEle, options){
 	function saveData(){
 		var data = getData();
 		showFormPopUp([
-			{label: "Enter a name for this configuration:", input: true, name: "name",
+			{label: _t("Enter a name for this configuration:"), input: true, name: "name",
 				value: currentConfigName, title: "Allowed characters: a-Z,0-9,_,- and space",
 				pattern: "[a-zA-Z0-9\\s_\\-]+", required: true},
-			{submit: true, name: "Save"}
+			{submit: true, name: _t("Save")}
 		], function(formData){
 			var name = formData.get("name").trim();
 			setTitle(name);
 			writeConfigToLocalStorage(name, data);
-			showPopUp("Configuration has been saved to browser storage.", [], {easyClose: true});
+			showPopUp(_t("Configuration has been saved to browser storage."), [], {easyClose: true});
 		});
 	}
 	function loadData(){
@@ -1129,6 +1131,9 @@ function addNewContentBox(){
 	c.className = "content-box calculator-instance";
 	c.innerHTML = calculatorTemplate;
 	contentPage.appendChild(c);
+	
+	//apply i18n to new calculator
+	if (window.d4?.i18n) window.d4.i18n.apply(c);
 	
 	//automatically add info pop-ups
 	c.querySelectorAll(".has-info").forEach(function(ele){
@@ -1239,7 +1244,7 @@ checkUrlFileLoad(function(fileType, data){
 	//on load
 	console.log("Got data from file:", fileType, data);
 	//what now?
-	let promptText = "A file with calculators has been loaded.\nDo you want to open/import the data?";
+	let promptText = _t("A file with calculators has been loaded.\nDo you want to open/import the data?");
 	if (confirm(promptText) == true){
 		//OK
 		openCalculatorsFromData(fileType, data, false);

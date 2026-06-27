@@ -1,5 +1,9 @@
 //TODO: common.js has been split when the 2nd calculator was introduced. It should probably become a module now to clean up the scope.
 
+function _t(s) {
+	return (window.d4 && d4.i18n && d4.i18n.t) ? d4.i18n.t(s) : s;
+}
+
 //URL parameter handling:
 
 const startUrlParams = new URLSearchParams(window.location.search);
@@ -67,7 +71,7 @@ function loadVisLib(finishedCallback, errorCallback){
 			finishedCallback();
 		}).catch(function(err){
 			if (errorCallback) errorCallback();
-			else showPopUp("Failed to load visualization library!");
+			else showPopUp(_t("Failed to load visualization library!"));
 		});
 	}
 }
@@ -98,6 +102,11 @@ if (optionDetailedInfo.checked){
 	contentPage.classList.remove("hide-damage-details");
 }else{
 	contentPage.classList.add("hide-damage-details");
+}
+
+function setLanguage(lang){
+	try { localStorage.setItem("d4-lang", lang); }catch(e){}
+	window.location.reload();
 }
 
 function toggleNavMenu(){
@@ -390,7 +399,7 @@ function showList(items, options, onSelectCallback){
 function showDataGraph(dataPoints, title){
 	//prep. visualization
 	var c = document.createElement("div");
-	c.innerHTML = "Loading ...";
+	c.innerHTML = _t("Loading ...");
 	var popup = showPopUp(c, [], {
 		width: "auto"
 	});
@@ -513,14 +522,14 @@ function addDynamicMod(parentEle, modName, className, value, disabled, stepSize,
 	});
 	var newAddModRemove = document.createElement("button");
 	newAddModRemove.textContent = "─";
-	newAddModRemove.title = "remove";
+			newAddModRemove.title = _t("remove");
 	newAddModRemove.addEventListener("click", function(){
 		newAddMod.remove();
 		if (onChange) onChange({label: modName, value: null, isDisabled: true});
 	});
 	var newAddModHide = document.createElement("button");
 	newAddModHide.innerHTML = "&#128065;";
-	newAddModHide.title = "disable";
+		newAddModHide.title = _t("disable");
 	newAddModHide.addEventListener("click", function(){
 		toggleDisableCalcItem(newAddMod, newAddModInput, newAddModHide, 0);
 		if (onChange) onChange(getData());
@@ -547,7 +556,7 @@ function addDynamicMod(parentEle, modName, className, value, disabled, stepSize,
 		newAddModInput.dataset.selectedTypes = JSON.stringify(selectedTypes);
 		typeBoxEle = document.createElement("div");
 		typeBoxEle.className = "type-box";
-		typeBoxEle.title = "Select one or more required 'types' for this item to in-/exclude it in certain calculations. No 'type' means it applies to all calculations.";
+		typeBoxEle.title = _t("Select one or more required 'types' for this item to in-/exclude it in certain calculations. No 'type' means it applies to all calculations.");
 		//restore?
 		addSelectableTypes(typeBoxEle, selectableTypes, selectedTypes);
 		//type select UI
@@ -592,11 +601,11 @@ function addDynamicModPromptPromise(initValue, promptText, searchList, selectabl
 					});
 				}
 			}; */
-			var selectOptions = [{name: "- Select (BETA) -", value: ""}];
+			var selectOptions = [{name: _t("- Select (BETA) -"), value: ""}];
 			searchList.forEach(function(itm){
 				if (!charClassFilter || !itm.group || itm.group == "All" || itm.group == charClassFilter){
 					selectOptions.push({
-						name: itm.label, group: itm.group, value: JSON.stringify(itm)
+						name: _t(itm.label), group: itm.group, value: JSON.stringify(itm)
 					});
 				}
 			});
@@ -605,7 +614,7 @@ function addDynamicModPromptPromise(initValue, promptText, searchList, selectabl
 				onChange: function(json){
 					var data = JSON.parse(json || "{}");
 					var nameInput = formPopUp.form.elements["name"];
-					if (nameInput) nameInput.value = data.label || "";
+					if (nameInput) nameInput.value = _t(data.label || "");
 					if (data.label){
 						//formPopUp.popUp.popUpClose();
 						//resolve({name: data.label, entry: data});
@@ -618,17 +627,17 @@ function addDynamicModPromptPromise(initValue, promptText, searchList, selectabl
 			};
 		}
 		var formConfig = [
-			{input: true, label: promptText || "Name:", name: "name", required: true, value: initValue, title: "Name for this modifier."}
+			{input: true, label: promptText || _t("Name:"), name: "name", required: true, value: initValue, title: _t("Name for this modifier.")}
 		];
 		if (selectButton) formConfig.push({customButton: selectButton});
-		if (selectElement) formConfig.push({select: selectElement, label: "Or select one from the list:", name: "names-selector", value: "", title: "Select a name from this predefined list."});
+		if (selectElement) formConfig.push({select: selectElement, label: _t("Or select one from the list:"), name: "names-selector", value: "", title: _t("Select a name from this predefined list.")});
 		if (selectButton || selectElement) formConfig.push({spacer: true});
 		if (selectableTypes?.length){
-			let typeOptions = buildSelectableTypeOptions("Select required 'types' (optional):", selectableTypes, selectedTypes || []);
+			let typeOptions = buildSelectableTypeOptions(_t("Select required 'types' (optional):"), selectableTypes, selectedTypes || []);
 			typeOptions.push({spacer: true});
 			formConfig.push(...typeOptions);
 		}
-		formConfig.push({submit: true, name: "Ok"});
+		formConfig.push({submit: true, name: _t("Ok")});
 		formPopUp = showFormPopUp(formConfig, function(formData){
 			var newName = formData.get("name").trim();
 			selectedTypes = [];
@@ -650,7 +659,7 @@ function buildSelectableTypeOptions(label, selectableTypes, selectedTypes){
 		options.push({
 			checkbox: true, label: itm.name, name: itm.value,
 			value: (selectedTypes.indexOf(itm.value) >= 0),
-			title: "Select this value to make '" + itm.value + "' a required property for the item."
+			title: _t("Select this value to make '") + itm.value + _t("' a required property for the item.")
 		});
 	});
 	return options;
@@ -759,9 +768,9 @@ function importConfigurationFromUrl(url, onDataCallback){
 	.catch(err => {
 		console.error("importConfigurationFromUrl - Failed to load JSON from URL:", url, "Error:", err);
 		if (err?.message && err.code){
-			showPopUp("Tried to load calculator(s) from URL but failed.<br>Error: " + err.message + " (" + err.code + ")");
+			showPopUp(_t("Tried to load calculator(s) from URL but failed.<br>Error: ") + err.message + " (" + err.code + ")");
 		}else{
-			showPopUp("Tried to load calculator(s) from URL but failed.<br>See console for detailed error.");
+			showPopUp(_t("Tried to load calculator(s) from URL but failed.<br>See console for detailed error."));
 		}
 	});
 }
@@ -772,14 +781,14 @@ function importConfigurationFromJson(contentJson, onDataCallback){
 		if (onDataCallback) onDataCallback("configArray",
 			contentJson.configArray || contentJson.allConfigs);
 	}else{
-		showPopUp("Could not import data.<br>Unknown file format.");
+		showPopUp(_t("Could not import data.<br>Unknown file format."));
 	}
 }
 function createStoredCalculatorsPopUp(onSelectCallback){
 	var storedConfigs = readConfigsFromLocalStorage();
 	var keys = Object.keys(storedConfigs);
 	if (!keys.length){
-		showPopUp("No data found in browser storage.<br>Please import a backup file or save a new configuration.", [], {easyClose: true});
+		showPopUp(_t("No data found in browser storage.<br>Please import a backup file or save a new configuration."), [], {easyClose: true});
 	}else{
 		keys = keys.sort();
 		//console.error("storedConfigs", storedConfigs);		//DEBUG
@@ -815,7 +824,7 @@ function createStoredCalculatorsPopUp(onSelectCallback){
 			delButton.textContent = "─";
 			delButton.addEventListener("click", function(ev){
 				ev.stopPropagation();
-				if (confirm("Delete this entry from browser storage?")){
+				if (confirm(_t("Delete this entry from browser storage?"))){
 					deleteConfigFromLocalStorage(cfg.name);
 					item.remove();
 				}
@@ -825,21 +834,21 @@ function createStoredCalculatorsPopUp(onSelectCallback){
 			n++;
 		});
 		if (n == 0){
-			list.innerHTML = "<p>- Found no stored data for this calculator -<br><br></p>";
+			list.innerHTML = "<p>" + _t("- Found no stored data for this calculator -") + "<br><br></p>";
 		}
 		var info = document.createElement("div");
-		info.innerHTML = "<p>Choose a configuration:</p>";
+		info.innerHTML = "<p>" + _t("Choose a configuration:") + "</p>";
 		var footer = document.createElement("div");
 		var btnBox = document.createElement("div");
 		btnBox.className = "group center buttons-box";
 		var btnClearAll = document.createElement("button");
-		btnClearAll.textContent = "CLEAR ALL";
+		btnClearAll.textContent = _t("CLEAR ALL");
 		btnClearAll.addEventListener("click", function(){
 			clearData();
 			popUp.popUpClose();
 		});
 		var btnExportAll = document.createElement("button");
-		btnExportAll.textContent = "EXPORT ALL";
+		btnExportAll.textContent = _t("EXPORT ALL");
 		btnExportAll.addEventListener("click", function(){
 			exportAllData();
 			popUp.popUpClose();
@@ -861,7 +870,7 @@ function readConfigsFromLocalStorage(){
 		var storedData = JSON.parse(storedDataStr);
 		return storedData.configurations || {};
 	}catch(err){
-		showPopUp("Failed to read from localStorage. Error: " + (err.message || err.name || err));
+		showPopUp(_t("Failed to read from localStorage. Error: ") + (err.message || err.name || err));
 	}
 }
 function writeAllConfigsToLocalStorage(configs, keepOld){
@@ -877,9 +886,9 @@ function writeAllConfigsToLocalStorage(configs, keepOld){
 			storedData.configurations = configs;
 		}
 		localStorage.setItem("d4-calc-data", JSON.stringify(storedData));
-		showPopUp("All configurations restored from file.", [], {easyClose: true});
+		showPopUp(_t("All configurations restored from file."), [], {easyClose: true});
 	}catch(err){
-		showPopUp("Failed to write to localStorage. Error: " + (err.message || err.name || err));
+		showPopUp(_t("Failed to write to localStorage. Error: ") + (err.message || err.name || err));
 	}
 }
 function writeConfigToLocalStorage(name, config){
@@ -893,7 +902,7 @@ function writeConfigToLocalStorage(name, config){
 		storedData.configurations[key] = {name: name, calc: d4cType, version: d4cVersion, data: config};
 		localStorage.setItem("d4-calc-data", JSON.stringify(storedData));
 	}catch(err){
-		showPopUp("Failed to write to localStorage. Error: " + (err.message || err.name || err));
+		showPopUp(_t("Failed to write to localStorage. Error: ") + (err.message || err.name || err));
 	}
 }
 function deleteConfigFromLocalStorage(name){
@@ -909,11 +918,11 @@ function deleteConfigFromLocalStorage(name){
 		localStorage.setItem("d4-calc-data", JSON.stringify(storedData));
 		return true;
 	}catch(err){
-		showPopUp("Failed to edit localStorage. Error: " + (err.message || err.name || err));
+		showPopUp(_t("Failed to edit localStorage. Error: ") + (err.message || err.name || err));
 	}
 }
 function clearData(){
-	if (!confirm("Are you sure you want to remove ALL cached data for ALL calculators?")){
+	if (!confirm(_t("Are you sure you want to remove ALL cached data for ALL calculators?"))){
 		return;
 	}
 	localStorage.removeItem("d4-calc-data");
